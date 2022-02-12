@@ -1,0 +1,35 @@
+{
+  "name": "image2ascii",
+  "version": "0.0.1",
+  "description": "node lib to transform an image to ascii",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "ava"
+  },
+  "keywords": [
+    "image",
+    "ascii",
+    "convert"
+  ],
+  "author": "Dominik Mueller",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^17.0.17",
+    "ava": "^4.0.1",
+    "ts-node": "^10.5.0",
+    "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "pino": "^7.6.5",
+    "pino-pretty": "^7.5.1"
+  },
+  "ava": {
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  }
+}
