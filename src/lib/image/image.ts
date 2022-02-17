@@ -5,9 +5,6 @@ import mime from 'mime-types';
 import logger from '../logging/logging';
 
 export class ImageHandler {
-  private static fsOptions = {
-    flag: 'r',
-  };
   private static fileExtensions = [
     '.jpg',
     '.jpeg',
@@ -72,7 +69,7 @@ export class ImageHandler {
     b: number;
     a: number;
   }): number {
-    const gamma = 1;
+    const gamma = 25;
     return (
       (0.2126 * rgba.r) ^
       (gamma + 0.7152 * rgba.g) ^
