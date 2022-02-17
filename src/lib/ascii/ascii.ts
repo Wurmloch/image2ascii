@@ -2,15 +2,19 @@ import { asciiFullMap, asciiShortMap } from './ascii-map';
 
 export class AsciiHandler {
   public static transformGrayscaleToAscii(
-    grayscalePixels: number[],
+    grayscalePixelLines: number[][],
     full = true
-  ): string[] {
+  ): string[][] {
     const asciiMap = full ? asciiFullMap : asciiShortMap;
-    const asciiChars: string[] = [];
-    grayscalePixels.forEach((grayscalePixel) => {
-      const percentage = (grayscalePixel / 255) % 1;
-      asciiChars.push(asciiMap[Math.floor(percentage * asciiMap.length)]);
+    const asciiPixels: string[][] = [];
+    grayscalePixelLines.forEach((grayscalePixelLine) => {
+      const asciiPixelLine: string[] = [];
+      grayscalePixelLine.forEach((grayscalePixel) => {
+        const percentage = (grayscalePixel / 255) % 1;
+        asciiPixelLine.push(asciiMap[Math.floor(percentage * asciiMap.length)]);
+      });
+      asciiPixels.push(asciiPixelLine);
     });
-    return asciiChars;
+    return asciiPixels;
   }
 }

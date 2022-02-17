@@ -34,16 +34,18 @@ export class ImageHandler {
 
   public static async readImagePixelsGrayScale(
     path: string
-  ): Promise<{ pixels: number[]; image: Jimp } | null> {
+  ): Promise<{ pixels: number[][]; image: Jimp } | null> {
     if (await this.checkFile(path)) {
       const image = await Jimp.read(path);
-      const pixels: number[] = [];
+      const pixels: number[][] = [];
       for (let y = 0; y < image.getWidth(); y++) {
+        const pixelLine = [];
         for (let x = 0; x < image.getHeight(); x++) {
-          pixels.push(
+          pixelLine.push(
             this.rgbaToGrayscale(Jimp.intToRGBA(image.getPixelColor(x, y)))
           );
         }
+        pixels.push(pixelLine);
       }
       return { pixels, image };
     }
@@ -64,7 +66,7 @@ export class ImageHandler {
     b: number;
     a: number;
   }): number {
-    const gamma = 100;
+    const gamma = 1;
     return (
       (0.2126 * rgba.r) ^
       (gamma + 0.7152 * rgba.g) ^

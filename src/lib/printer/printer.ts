@@ -2,23 +2,24 @@ import { createWriteStream, writeFileSync, existsSync } from 'fs';
 import logger from '../logging/logging';
 
 export class Printer {
-  constructor(private filename: string, private stretchX = 2) {}
+  constructor(
+    private filename: string,
+    private stretchX = 3,
+    private stretchY = 2
+  ) {}
 
-  public async printAsciiPixels(
-    pixels: string[],
-    width: number,
-    height: number
-  ): Promise<void> {
+  public async printAsciiPixels(pixels: string[][]): Promise<void> {
     const lines: string[] = [];
 
-    for (let y = 0; y < height; y++) {
+    pixels.forEach((pixelLine) => {
       let line = '';
-      for (let x = 0; x < width; x++) {
-        line += pixels[y * x].repeat(this.stretchX);
+      pixelLine.forEach((pixel) => {
+        line += pixel.repeat(this.stretchX);
+      });
+      for (let i = 0; i < this.stretchY; i++) {
+        lines.push(line);
       }
-
-      lines.push(line);
-    }
+    });
 
     return new Promise((resolve, reject) => {
       const file = createWriteStream(this.filename);

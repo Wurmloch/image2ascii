@@ -12,11 +12,7 @@ if (process.argv.length >= 3) {
     ImageHandler.readImagePixelsGrayScale(arg).then((img) => {
       if (img) {
         const asciiPixels = AsciiHandler.transformGrayscaleToAscii(img.pixels);
-        printer.printAsciiPixels(
-          asciiPixels,
-          img.image.getWidth(),
-          img.image.getHeight()
-        );
+        printer.printAsciiPixels(asciiPixels);
       }
     });
   });
