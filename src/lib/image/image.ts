@@ -64,7 +64,7 @@ export class ImageHandler {
     b: number;
     a: number;
   }): number {
-    const gamma = 1;
+    const gamma = 100;
     return (
       (0.2126 * rgba.r) ^
       (gamma + 0.7152 * rgba.g) ^
