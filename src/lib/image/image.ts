@@ -1,11 +1,10 @@
 import { existsSync } from 'fs';
 import { extname } from 'path';
 import Jimp from 'jimp';
-import { Magic, MAGIC_MIME_TYPE } from 'mmmagic';
+import mime from 'mime-types';
 import logger from '../logging/logging';
 
 export class ImageHandler {
-  private static magic = new Magic(MAGIC_MIME_TYPE);
   private static fsOptions = {
     flag: 'r',
   };
@@ -33,21 +32,28 @@ export class ImageHandler {
   ];
 
   public static async readImagePixelsGrayScale(
-    path: string
+    path: string,
+    resizeWidth = 100
   ): Promise<{ pixels: number[][]; image: Jimp } | null> {
     if (await this.checkFile(path)) {
-      const image = await Jimp.read(path);
+      const originalImage = await Jimp.read(path);
+      const resizedImage = originalImage.resize(
+        resizeWidth,
+        (originalImage.getHeight() / originalImage.getWidth()) * resizeWidth
+      );
       const pixels: number[][] = [];
-      for (let y = 0; y < image.getWidth(); y++) {
+      for (let y = 0; y < resizedImage.getWidth(); y++) {
         const pixelLine = [];
-        for (let x = 0; x < image.getHeight(); x++) {
+        for (let x = 0; x < resizedImage.getHeight(); x++) {
           pixelLine.push(
-            this.rgbaToGrayscale(Jimp.intToRGBA(image.getPixelColor(x, y)))
+            this.rgbaToGrayscale(
+              Jimp.intToRGBA(resizedImage.getPixelColor(x, y))
+            )
           );
         }
         pixels.push(pixelLine);
       }
-      return { pixels, image };
+      return { pixels, image: resizedImage };
     }
     return null;
   }
@@ -94,24 +100,12 @@ export class ImageHandler {
   }
 
   private static async fileIsImage(path: string): Promise<boolean> {
-    const fileDetection = (): Promise<string | string[]> =>
-      new Promise((resolve, reject) => {
-        this.magic.detectFile(path, (err, result) => {
-          if (err) reject(err);
-          resolve(result);
-        });
-      });
-    const fileDetectionResult = await fileDetection();
-    const contentTypes = Array.isArray(fileDetectionResult)
-      ? [...fileDetectionResult]
-      : [fileDetectionResult];
-    for (const contentType of contentTypes) {
-      if (!this.fileContentTypes.includes(contentType)) {
-        logger.error(
-          `File ${path} is not an accepted image type according to content type ${fileDetectionResult}`
-        );
-        return false;
-      }
+    const contentType = mime.lookup(path) as string;
+    if (!this.fileContentTypes.includes(contentType)) {
+      logger.error(
+        `File ${path} is not an accepted image type according to content type ${contentType}`
+      );
+      return false;
     }
     return true;
   }
