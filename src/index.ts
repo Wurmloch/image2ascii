@@ -7,7 +7,7 @@ import logger from './lib/logging/logging';
 
 if (process.argv.length >= 3) {
   const args = process.argv.slice(2);
-  const printer = new Printer('./output');
+  const printer = new Printer('./output.txt');
   args.forEach((arg) => {
     ImageHandler.readImagePixelsGrayScale(arg).then((img) => {
       if (img) {
