@@ -1,6 +1,5 @@
 import { pino } from 'pino';
 const logger = pino({
-  enabled: !!process.env.NOLOG,
   transport: {
     target: 'pino-pretty',
     options: {
